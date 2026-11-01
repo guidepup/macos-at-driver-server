@@ -32,6 +32,17 @@ test.describe("VoiceOver speech extension", () => {
       page.getByRole("heading", { name: "Hello Guidepup" }),
     ).toBeVisible();
 
+    const extensionVoiceIdentifier =
+      "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension";
+    const configuredVoiceIdentifier = voiceOver.getSetting(
+      "SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier",
+    );
+    console.log({
+      configuredVoiceIdentifier,
+      extensionVoiceIdentifier,
+    });
+    expect(configuredVoiceIdentifier).toBe(extensionVoiceIdentifier);
+
     await voiceOver.navigateToWebContent();
     await voiceOver.navigateNextHeadingUntil(/Hello Guidepup/);
 

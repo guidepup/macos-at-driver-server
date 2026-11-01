@@ -39,6 +39,7 @@ jobs:
           pluginkit -m -v -p com.apple.AudioUnit | tee plugin-list.txt
           grep "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension" plugin-list.txt
           auval -v ausp atdg BOCU
+          say -v '?' | grep "MacOSATDriverServerExtension" || true
 
       - run: |
           node lib/bin/macos-at-driver listen > voiceover-listener.log 2>&1 &
@@ -47,14 +48,20 @@ jobs:
           echo $! > extension-log.pid
 
           for attempt in {1..50}; do
-            [ -S /tmp/at_driver_generic/driver.socket ] && exit 0
+            if [ -S /tmp/at_driver_generic/driver.socket ]; then
+              break
+            fi
             sleep 0.1
           done
+          if [ ! -S /tmp/at_driver_generic/driver.socket ]; then
+            echo "Unix socket listener did not start"
+            cat voiceover-listener.log
+            exit 1
+          fi
 
-          echo "Unix socket listener did not start"
-          cat voiceover-listener.log
-
-          exit 1
+          say -v "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension" \
+            "macOS speech extension synthesis probe" || true
+          sleep 2
 
       - run: npm run test:voiceover
 
