@@ -1,0 +1,70 @@
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  voiceover-hello-world:
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - run: npm ci
+
+      - run: npx @guidepup/setup setup --ci
+      - run: npx @guidepup/setup install voiceover
+      - run: npx playwright install webkit
+
+      - run: |
+          xcodebuild \
+            -project src/MacOSATDriverServer/MacOSATDriverServer.xcodeproj \
+            -scheme MacOSATDriverServerExtension \
+            -configuration Debug \
+            build \
+            CODE_SIGNING_ALLOWED=NO
+
+      - run: node lib/bin/macos-at-driver install
+      - run: auval -v 'ausp atdg BOCU'
+
+      - run: |
+          node lib/bin/macos-at-driver listen > voiceover-listener.log 2>&1 &
+
+          echo $! > voiceover-listener.pid
+
+          for attempt in {1..50}; do
+            [ -S /tmp/at_driver_generic/driver.socket ] && exit 0
+            sleep 0.1
+          done
+
+          echo "Unix socket listener did not start"
+          cat voiceover-listener.log
+
+          exit 1
+
+      - run: npm run test:voiceover
+
+      - if: always()
+        run: |
+          if [ -f voiceover-listener.pid ]; then
+            kill "$(cat voiceover-listener.pid)" 2>/dev/null || true
+          fi
+
+          node lib/bin/macos-at-driver uninstall || true
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        continue-on-error: true
+        with:
+          if-no-files-found: warn
+          path: |
+            voiceover-listener.log
+            test-results/
+            playwright-report/

@@ -1,9 +1,0 @@
-{
-    "compilerOptions": {
-        "checkJs": true,
-        "module": "commonjs",
-        "noEmit": true,
-        "target": "es2022"
-    },
-    "include": ["lib", "test"]
-}

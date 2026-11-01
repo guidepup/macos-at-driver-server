@@ -13,8 +13,6 @@ private let log = Logger(subsystem: "com.bundle.id.MacOSATDriverServerExtension"
 public class AudioUnitFactory: NSObject, AUAudioUnitFactory {
     var auAudioUnit: AUAudioUnit?
 
-    private var observation: NSKeyValueObservation?
-
     public func beginRequest(with context: NSExtensionContext) {
 
     }
@@ -25,15 +23,6 @@ public class AudioUnitFactory: NSObject, AUAudioUnitFactory {
 
         guard let audioUnit = auAudioUnit as? MacOSATDriverServerExtensionAudioUnit else {
             fatalError("Failed to create MacOSATDriverServerExtension")
-        }
-
-        audioUnit.setupParameterTree(MacOSATDriverServerExtensionParameterSpecs.createAUParameterTree())
-
-        self.observation = audioUnit.observe(\.allParameterValues, options: [.new]) { object, change in
-            guard let tree = audioUnit.parameterTree else { return }
-            
-            // This insures the Audio Unit gets initial values from the host.
-            for param in tree.allParameters { param.value = param.value }
         }
 
         return audioUnit

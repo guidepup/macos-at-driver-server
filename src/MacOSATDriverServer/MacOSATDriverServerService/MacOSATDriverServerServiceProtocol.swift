@@ -8,7 +8,5 @@
 import Foundation
 
 @objc protocol MacOSATDriverServerServiceProtocol {
-  func postInitEvent()
   func postSpeechEvent(speech: String)
-  func postCancelEvent()
 }

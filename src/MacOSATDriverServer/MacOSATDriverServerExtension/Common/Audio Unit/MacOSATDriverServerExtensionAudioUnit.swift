@@ -23,9 +23,6 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
 
     private var format:AVAudioFormat
 
-	private var linearGain = AUValue(0.0)
-    
-
     @objc override init(componentDescription: AudioComponentDescription, options: AudioComponentInstantiationOptions) throws {
         let basicDescription = AudioStreamBasicDescription(mSampleRate: 22050.0,
 														   mFormatID: kAudioFormatLinearPCM,
@@ -45,10 +42,6 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
         
         messenger.remoteObjectInterface = NSXPCInterface(with: MacOSATDriverServerServiceProtocol.self)
         messenger.resume()
-        
-        if let proxy = messenger.remoteObjectProxy as? MacOSATDriverServerServiceProtocol {
-            proxy.postInitEvent()
-        }
         logger.log("initialized")
     }
     
@@ -68,56 +61,6 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
     public override func allocateRenderResources() throws {
         try super.allocateRenderResources()
     }
-
-	public func setupParameterTree(_ parameterTree: AUParameterTree) {
-		self.parameterTree = parameterTree
-
-		// Set the Parameter default values before setting up the parameter callbacks
-		for param in parameterTree.allParameters {
-			setParameter(paramAddress: param.address, value: param.value)
-		}
-
-		setupParameterCallbacks()
-	}
-
-	private func setupParameterCallbacks() {
-		 // implementorValueObserver is called when a parameter changes value.
-		parameterTree?.implementorValueObserver = { [weak self] param, value -> Void in
-			self?.setParameter(paramAddress: param.address, value: value)
-		}
-
-		// implementorValueProvider is called when the value needs to be refreshed.
-		parameterTree?.implementorValueProvider = { [weak self] param in
-			return self!.getParameter(param.address)
-		}
-
-		// A function to provide string representations of parameter values.
-		parameterTree?.implementorStringFromValueCallback = { param, valuePtr in
-			guard let value = valuePtr?.pointee else {
-			   return "-"
-			}
-			return NSString.localizedStringWithFormat("%.f", value) as String
-		}
-	}
-
-	// MARK:- Parameter Setter / Getter
-	func setParameter(paramAddress: AUParameterAddress, value: AUValue) {
-		switch paramAddress {
-		case MacOSATDriverServerExtensionParameterAddress.gain.rawValue:
-			linearGain = value
-		default:
-			return
-		}
-	}
-
-	func getParameter(_ paramAddress: AUParameterAddress) -> AUValue {
-		switch paramAddress {
-		case MacOSATDriverServerExtensionParameterAddress.gain.rawValue:
-			return linearGain
-		default:
-			return 0.0
-		}
-	}
 
 	// MARK:- Rendering
 	/*
@@ -158,12 +101,7 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
     
     public override func cancelSpeechRequest() {
         logger.log("cancelSpeechRequest")
-
         self.request = nil
-        
-        if let proxy = messenger.remoteObjectProxy as? MacOSATDriverServerServiceProtocol {
-            proxy.postCancelEvent()
-        }
     }
     
     public override var speechVoices: [AVSpeechSynthesisProviderVoice] {

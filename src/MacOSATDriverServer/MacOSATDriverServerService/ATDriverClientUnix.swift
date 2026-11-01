@@ -27,20 +27,8 @@ class ATDriverClientUnix {
 
   static let pipe = "/tmp/at_driver_generic/driver.socket"
 
-  func sendInitEvent() throws {
-    try self._sendEvent(name: "lifecycle", data: "hello")
-  }
-
-  func sendGoodbyeEvent() throws {
-    try self._sendEvent(name: "lifecycle", data: "goodbye")
-  }
-
   func sendSpeechEvent(speech: String) throws {
     try self._sendEvent(name: "speech", data: speech)
-  }
-
-  func sendCancelEvent() throws {
-    try self._sendEvent(name: "lifecycle", data: "cancel")
   }
 
   func _connect() throws -> SocketResource {
@@ -50,8 +38,15 @@ class ATDriverClientUnix {
     let pathSize = size_t(MemoryLayout.size(ofValue: unixAddr.sun_path))
     unixAddr.sun_family = sa_family_t(AF_UNIX)
     ATDriverClientUnix.pipe.withCString { pipeAddress in
-      strncpy(&unixAddr.sun_path, pipeAddress, pathSize)
-      return
+      withUnsafeMutableBytes(of: &unixAddr.sun_path) { pathBytes in
+        pathBytes.initializeMemory(as: UInt8.self, repeating: 0)
+        let destination = pathBytes.bindMemory(to: CChar.self)
+        var index = 0
+        while index < pathSize && pipeAddress[index] != 0 {
+          destination[index] = pipeAddress[index]
+          index += 1
+        }
+      }
     }
 
     let unixAddrSize = socklen_t(MemoryLayout.size(ofValue: unixAddr))

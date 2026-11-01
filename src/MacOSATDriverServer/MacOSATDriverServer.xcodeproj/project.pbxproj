@@ -414,42 +414,6 @@
 			productReference = AD64B3652B2B995B00AC0234 /* MacOSATDriverServer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AD64B38B2B2B995C00AC0234 /* MacOSATDriverServerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AD64B3C62B2B995C00AC0234 /* Build configuration list for PBXNativeTarget "MacOSATDriverServerTests" */;
-			buildPhases = (
-				AD64B3882B2B995C00AC0234 /* Sources */,
-				AD64B3892B2B995C00AC0234 /* Frameworks */,
-				AD64B38A2B2B995C00AC0234 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AD64B38E2B2B995C00AC0234 /* PBXTargetDependency */,
-			);
-			name = MacOSATDriverServerTests;
-			productName = MacOSATDriverServerTests;
-			productReference = AD64B38C2B2B995C00AC0234 /* MacOSATDriverServerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		AD64B3952B2B995C00AC0234 /* MacOSATDriverServerUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AD64B3C92B2B995C00AC0234 /* Build configuration list for PBXNativeTarget "MacOSATDriverServerUITests" */;
-			buildPhases = (
-				AD64B3922B2B995C00AC0234 /* Sources */,
-				AD64B3932B2B995C00AC0234 /* Frameworks */,
-				AD64B3942B2B995C00AC0234 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AD64B3982B2B995C00AC0234 /* PBXTargetDependency */,
-			);
-			name = MacOSATDriverServerUITests;
-			productName = MacOSATDriverServerUITests;
-			productReference = AD64B3962B2B995C00AC0234 /* MacOSATDriverServerUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		AD64B3A12B2B995C00AC0234 /* MacOSATDriverServerExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD64B3BF2B2B995C00AC0234 /* Build configuration list for PBXNativeTarget "MacOSATDriverServerExtension" */;
@@ -499,14 +463,6 @@
 					AD64B3642B2B995B00AC0234 = {
 						CreatedOnToolsVersion = 14.3;
 					};
-					AD64B38B2B2B995C00AC0234 = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = AD64B3642B2B995B00AC0234;
-					};
-					AD64B3952B2B995C00AC0234 = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = AD64B3642B2B995B00AC0234;
-					};
 					AD64B3A12B2B995C00AC0234 = {
 						CreatedOnToolsVersion = 14.3;
 					};
@@ -529,8 +485,6 @@
 			projectRoot = "";
 			targets = (
 				AD64B3642B2B995B00AC0234 /* MacOSATDriverServer */,
-				AD64B38B2B2B995C00AC0234 /* MacOSATDriverServerTests */,
-				AD64B3952B2B995C00AC0234 /* MacOSATDriverServerUITests */,
 				AD64B3A12B2B995C00AC0234 /* MacOSATDriverServerExtension */,
 				AD64B3DA2B33729C00AC0234 /* MacOSATDriverServerService */,
 			);
@@ -542,9 +496,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD64B3842B2B995B00AC0234 /* Preview Assets.xcassets in Resources */,
-				AD64B3862B2B995C00AC0234 /* Assets.xcassets in Resources */,
-				AD64B3702B2B995B00AC0234 /* Synth.aif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,7 +517,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD64B3A82B2B995C00AC0234 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,15 +534,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD64B37D2B2B995B00AC0234 /* AudioUnitHostModel.swift in Sources */,
-				AD64B37F2B2B995B00AC0234 /* AudioUnitViewModel.swift in Sources */,
-				AD64B3692B2B995B00AC0234 /* ContentView.swift in Sources */,
 				AD64B3812B2B995B00AC0234 /* MacOSATDriverServerApp.swift in Sources */,
-				AD64B36D2B2B995B00AC0234 /* ViewControllerRepresentable.swift in Sources */,
-				AD64B37A2B2B995B00AC0234 /* StringHelpers.swift in Sources */,
-				AD64B3752B2B995B00AC0234 /* MIDIManager.swift in Sources */,
-				AD64B3772B2B995B00AC0234 /* TypeAliases.swift in Sources */,
-				AD64B3722B2B995B00AC0234 /* SimplePlayEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,12 +560,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD64B3F32B47731000AC0234 /* ATDriverEventError.swift in Sources */,
-				AD64B3B82B2B995C00AC0234 /* Parameters.swift in Sources */,
-				AD64B3AD2B2B995C00AC0234 /* ParameterSpecBase.swift in Sources */,
-				AD64B3B02B2B995C00AC0234 /* CrossPlatform.swift in Sources */,
 				AD64B3BB2B2B995C00AC0234 /* AudioUnitFactory.swift in Sources */,
 				AD64B3EE2B4769EF00AC0234 /* MacOSATDriverServerServiceProtocol.swift in Sources */,
-				AD64B3B22B2B995C00AC0234 /* String+Utils.swift in Sources */,
 				AD64B3B52B2B995C00AC0234 /* MacOSATDriverServerExtensionAudioUnit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -814,7 +752,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MacOSATDriverServerExtension/Common/MacOSATDriverServerExtension-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -847,7 +784,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MacOSATDriverServerExtension/Common/MacOSATDriverServerExtension-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -856,14 +792,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MacOSATDriverServer/MacOSATDriverServer.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MacOSATDriverServer/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -896,14 +829,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MacOSATDriverServer/MacOSATDriverServer.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MacOSATDriverServer/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;

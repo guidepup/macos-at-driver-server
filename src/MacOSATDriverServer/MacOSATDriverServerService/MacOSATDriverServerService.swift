@@ -12,23 +12,6 @@ class MacOSATDriverServerService: NSObject, MacOSATDriverServerServiceProtocol {
   let logger = Logger(subsystem: "com.bocoup.MacOSATDriverServer", category: "service")
   let client = ATDriverClientUnix()
 
-  deinit {
-    do {
-      try client.sendGoodbyeEvent()
-    } catch {
-      logger.error("error sending goodbye event: \(String(reflecting: error), privacy: .public)")
-    }
-  }
-
-  @objc func postInitEvent() {
-    logger.log("received init event")
-    do {
-      try client.sendInitEvent()
-    } catch {
-      logger.error("error sending init event: \(String(reflecting: error), privacy: .public)")
-    }
-  }
-
   @objc func postSpeechEvent(speech: String) {
     logger.log("received speech event")
     do {
@@ -38,12 +21,4 @@ class MacOSATDriverServerService: NSObject, MacOSATDriverServerServiceProtocol {
     }
   }
 
-  @objc func postCancelEvent() {
-    logger.log("received cancel event")
-    do {
-      try client.sendCancelEvent()
-    } catch {
-      logger.error("error sending cancel event: \(String(reflecting: error), privacy: .public)")
-    }
-  }
 }
