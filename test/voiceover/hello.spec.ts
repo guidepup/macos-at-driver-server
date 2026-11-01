@@ -1,6 +1,15 @@
 import { expect } from "@playwright/test";
 import { voiceOverTest as test } from "@guidepup/playwright";
 
+test.use({
+  voiceOverStartOptions: {
+    settings: {
+      SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier:
+        "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension",
+    },
+  },
+});
+
 test.describe("VoiceOver speech extension", () => {
   test("announces the Hello Guidepup heading", async ({ page, voiceOver }) => {
     await page.goto("about:blank", { waitUntil: "load" });

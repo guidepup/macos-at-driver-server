@@ -38,11 +38,14 @@ jobs:
       - run: |
           pluginkit -m -v -p com.apple.AudioUnit | tee plugin-list.txt
           grep "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension" plugin-list.txt
+          defaults read com.apple.Accessibility SpeechVoiceIdentifierForLanguage
+          auval -v ausp atdg BOCU
 
       - run: |
           node lib/bin/macos-at-driver listen > voiceover-listener.log 2>&1 &
-
           echo $! > voiceover-listener.pid
+          log stream --style compact --predicate 'subsystem == "com.bocoup.MacOSATDriverServer"' > extension-log.txt 2>&1 &
+          echo $! > extension-log.pid
 
           for attempt in {1..50}; do
             [ -S /tmp/at_driver_generic/driver.socket ] && exit 0
@@ -61,6 +64,9 @@ jobs:
           if [ -f voiceover-listener.pid ]; then
             kill "$(cat voiceover-listener.pid)" 2>/dev/null || true
           fi
+          if [ -f extension-log.pid ]; then
+            kill "$(cat extension-log.pid)" 2>/dev/null || true
+          fi
 
           node lib/bin/macos-at-driver uninstall || true
 
@@ -71,5 +77,7 @@ jobs:
           if-no-files-found: warn
           path: |
             voiceover-listener.log
+            extension-log.txt
+            plugin-list.txt
             test-results/
             playwright-report/

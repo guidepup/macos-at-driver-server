@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import os
 
 class ATDriverClientUnix {
+  private let logger = Logger(subsystem: "com.bocoup.MacOSATDriverServer", category: "socket-client")
 
   class SocketResource {
     var descriptor: Int32
@@ -28,6 +30,7 @@ class ATDriverClientUnix {
   static let pipe = "/tmp/at_driver_generic/driver.socket"
 
   func sendSpeechEvent(speech: String) throws {
+    logger.log("sending speech event to \(ATDriverClientUnix.pipe, privacy: .public)")
     try self._sendEvent(name: "speech", data: speech)
   }
 

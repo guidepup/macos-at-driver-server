@@ -13,6 +13,8 @@ import os
 
 public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAudioUnit
 {
+    private static let voiceIdentifier =
+        "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension"
     private let logger = Logger(subsystem: "com.bocoup.MacOSATDriverServer", category: "audio-unit")
     private var messenger = NSXPCConnection(serviceName: "com.bocoup.MacOSATDriverServerService")
 
@@ -41,6 +43,12 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
         _outputBusses = AUAudioUnitBusArray(audioUnit: self, busType: AUAudioUnitBusType.output, busses: [outputBus])
         
         messenger.remoteObjectInterface = NSXPCInterface(with: MacOSATDriverServerServiceProtocol.self)
+        messenger.interruptionHandler = { [logger] in
+            logger.error("XPC service interrupted")
+        }
+        messenger.invalidationHandler = { [logger] in
+            logger.error("XPC service invalidated")
+        }
         messenger.resume()
         logger.log("initialized")
     }
@@ -87,6 +95,7 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
     
     public override func synthesizeSpeechRequest(_ speechRequest: AVSpeechSynthesisProviderRequest) {
         logger.log("synthesizeSpeechRequest")
+        logger.log("SSML: \(speechRequest.ssmlRepresentation, privacy: .public)")
 
         self.request = speechRequest
         guard let utterance = AVSpeechUtterance(ssmlRepresentation: speechRequest.ssmlRepresentation) else {
@@ -96,6 +105,8 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
         
         if let proxy = messenger.remoteObjectProxy as? MacOSATDriverServerServiceProtocol {
             proxy.postSpeechEvent(speech: utterance.speechString)
+        } else {
+            logger.error("XPC service proxy unavailable")
         }
     }
     
@@ -110,7 +121,7 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
                 logger.log("speechVoices")
             }
             return [
-            AVSpeechSynthesisProviderVoice(name: "MacOSATDriverServerExtensionVoice", identifier: "MacOSATDriverServerExtension", primaryLanguages: ["en-US"], supportedLanguages: ["en-US"])
+            AVSpeechSynthesisProviderVoice(name: "MacOSATDriverServerExtensionVoice", identifier: Self.voiceIdentifier, primaryLanguages: ["en-US"], supportedLanguages: ["en-US"])
             ]
         }
         set { }
