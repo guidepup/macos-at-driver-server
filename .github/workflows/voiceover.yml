@@ -64,6 +64,12 @@ jobs:
           sleep 2
 
       - run: npm run test:voiceover
+      - run: |
+          cat voiceover-listener.log
+          if ! grep -q '"type":"speech"' voiceover-listener.log; then
+            echo "No spoken phrase reached the Unix socket"
+            exit 1
+          fi
 
       - if: always()
         run: |

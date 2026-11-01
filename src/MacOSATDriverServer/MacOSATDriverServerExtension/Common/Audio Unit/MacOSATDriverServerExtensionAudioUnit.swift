@@ -9,6 +9,8 @@
 // Swift in this case. It is not recommended to use Swift in other AU types.
 
 import AVFoundation
+import Darwin
+import Foundation
 import os
 
 public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAudioUnit
@@ -98,16 +100,79 @@ public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAud
         logger.log("SSML: \(speechRequest.ssmlRepresentation, privacy: .public)")
 
         self.request = speechRequest
-        guard let utterance = AVSpeechUtterance(ssmlRepresentation: speechRequest.ssmlRepresentation) else {
-            logger.error("could not parse speech request")
+        let speechText: String
+        if let utterance = AVSpeechUtterance(ssmlRepresentation: speechRequest.ssmlRepresentation) {
+            speechText = utterance.speechString
+        } else {
+            let ssml = speechRequest.ssmlRepresentation
+            if let data = ssml.data(using: .utf8),
+               let document = try? XMLDocument(data: data, options: []),
+               let text = document.stringValue,
+               !text.isEmpty {
+                speechText = text
+            } else {
+                speechText = ssml.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
+            }
+        }
+
+        guard !speechText.isEmpty else {
+            logger.error("could not extract speech text from provider request")
             return
+        }
+
+        logger.log("speech text: \(speechText, privacy: .public)")
+        do {
+            try sendSpeechEvent(speechText)
+        } catch {
+            logger.error("direct socket send failed: \(String(reflecting: error), privacy: .public)")
         }
         
         if let proxy = messenger.remoteObjectProxy as? MacOSATDriverServerServiceProtocol {
-            proxy.postSpeechEvent(speech: utterance.speechString)
+            proxy.postSpeechEvent(speech: speechText)
         } else {
             logger.error("XPC service proxy unavailable")
         }
+    }
+
+    private func sendSpeechEvent(_ speech: String) throws {
+        let descriptor = socket(AF_UNIX, SOCK_STREAM, 0)
+        guard descriptor >= 0 else {
+            throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+        }
+        defer { close(descriptor) }
+
+        var address = sockaddr_un()
+        address.sun_family = sa_family_t(AF_UNIX)
+        let path = "/tmp/at_driver_generic/driver.socket"
+        let pathBytes = path.utf8CString
+        guard pathBytes.count <= MemoryLayout.size(ofValue: address.sun_path) else {
+            throw NSError(domain: NSPOSIXErrorDomain, code: Int(ENAMETOOLONG))
+        }
+        withUnsafeMutableBytes(of: &address.sun_path) { bytes in
+            bytes.initializeMemory(as: CChar.self, repeating: 0)
+            for (index, byte) in pathBytes.enumerated() {
+                if index >= bytes.count { break }
+                bytes[index] = UInt8(byte)
+            }
+        }
+
+        let addressLength = socklen_t(MemoryLayout.size(ofValue: address))
+        try withUnsafePointer(to: &address) { pointer in
+            try pointer.withMemoryRebound(to: sockaddr.self, capacity: 1) { socketAddress in
+                guard connect(descriptor, socketAddress, addressLength) >= 0 else {
+                    throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+                }
+            }
+        }
+
+        let message = "speech:\(speech)"
+        try message.utf8CString.withUnsafeBufferPointer { buffer in
+            guard let baseAddress = buffer.baseAddress else { return }
+            guard write(descriptor, baseAddress, strlen(baseAddress)) >= 0 else {
+                throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+            }
+        }
+        logger.log("direct socket speech event sent")
     }
     
     public override func cancelSpeechRequest() {
