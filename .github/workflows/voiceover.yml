@@ -32,7 +32,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
 
       - run: node lib/bin/macos-at-driver install
-      - run: auval -v 'ausp atdg BOCU'
+      - run: auval -v ausp atdg BOCU
 
       - run: |
           node lib/bin/macos-at-driver listen > voiceover-listener.log 2>&1 &
