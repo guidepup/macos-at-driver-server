@@ -38,7 +38,6 @@ jobs:
       - run: |
           pluginkit -m -v -p com.apple.AudioUnit | tee plugin-list.txt
           grep "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension" plugin-list.txt
-          defaults read com.apple.Accessibility SpeechVoiceIdentifierForLanguage
           auval -v ausp atdg BOCU
 
       - run: |
