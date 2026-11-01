@@ -29,10 +29,15 @@ jobs:
             -scheme MacOSATDriverServerExtension \
             -configuration Debug \
             build \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=YES \
+            DEVELOPMENT_TEAM=
 
       - run: node lib/bin/macos-at-driver install
-      - run: auval -v ausp atdg BOCU
+      - run: |
+          pluginkit -m -v -p com.apple.AudioUnit | tee plugin-list.txt
+          grep "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension" plugin-list.txt
 
       - run: |
           node lib/bin/macos-at-driver listen > voiceover-listener.log 2>&1 &
