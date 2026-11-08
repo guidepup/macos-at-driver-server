@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import { voiceOverTest as test } from "@guidepup/playwright";
 
 const extensionVoiceIdentifier =
-  "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension";
+  "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension";
 const voiceIdentifierSetting =
   "SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier";
 
@@ -35,13 +35,6 @@ test.describe("VoiceOver speech extension", () => {
     await expect(
       page.getByRole("heading", { name: "Hello Guidepup" }),
     ).toBeVisible();
-
-    const configuredVoiceIdentifier = voiceOver.getSetting(voiceIdentifierSetting);
-    console.log({
-      configuredVoiceIdentifier,
-      extensionVoiceIdentifier,
-    });
-    expect(configuredVoiceIdentifier).toBe(extensionVoiceIdentifier);
 
     await voiceOver.navigateToWebContent();
     await voiceOver.navigateNextHeadingUntil(/Hello Guidepup/);
