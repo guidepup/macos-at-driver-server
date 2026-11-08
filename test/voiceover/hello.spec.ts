@@ -1,11 +1,15 @@
 import { expect } from "@playwright/test";
 import { voiceOverTest as test } from "@guidepup/playwright";
 
+const extensionVoiceIdentifier =
+  "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension";
+const voiceIdentifierSetting =
+  "SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier";
+
 test.use({
   voiceOverStartOptions: {
     settings: {
-      SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier:
-        "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension",
+      [voiceIdentifierSetting]: extensionVoiceIdentifier,
     },
   },
 });
@@ -32,11 +36,7 @@ test.describe("VoiceOver speech extension", () => {
       page.getByRole("heading", { name: "Hello Guidepup" }),
     ).toBeVisible();
 
-    const extensionVoiceIdentifier =
-      "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension";
-    const configuredVoiceIdentifier = voiceOver.getSetting(
-      "SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier",
-    );
+    const configuredVoiceIdentifier = voiceOver.getSetting(voiceIdentifierSetting);
     console.log({
       configuredVoiceIdentifier,
       extensionVoiceIdentifier,

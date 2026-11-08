@@ -16,7 +16,7 @@ import os
 public class MacOSATDriverServerExtensionAudioUnit: AVSpeechSynthesisProviderAudioUnit
 {
     private static let voiceIdentifier =
-        "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension"
+        "MacOSATDriverServerExtension"
     private let logger = Logger(subsystem: "com.bocoup.MacOSATDriverServer", category: "audio-unit")
     private var messenger = NSXPCConnection(serviceName: "com.bocoup.MacOSATDriverServerService")
 
