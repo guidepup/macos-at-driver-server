@@ -33,7 +33,7 @@ test.describe("VoiceOver speech extension", () => {
     ).toBeVisible();
 
     const extensionVoiceIdentifier =
-      "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension";
+      "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension";
     const configuredVoiceIdentifier = voiceOver.getSetting(
       "SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier",
     );
