@@ -59,7 +59,7 @@ jobs:
             exit 1
           fi
 
-          say -v "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension" \
+          say -v "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension" \
             "macOS speech extension synthesis probe" || true
           sleep 2
 
