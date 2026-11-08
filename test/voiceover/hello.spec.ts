@@ -5,7 +5,7 @@ test.use({
   voiceOverStartOptions: {
     settings: {
       SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier:
-        "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension",
+        "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension",
     },
   },
 });
@@ -33,7 +33,7 @@ test.describe("VoiceOver speech extension", () => {
     ).toBeVisible();
 
     const extensionVoiceIdentifier =
-      "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension";
+      "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension.MacOSATDriverServerExtension";
     const configuredVoiceIdentifier = voiceOver.getSetting(
       "SCRCategories_SCRCategorySystemWide_SCRSpeechLanguages_default_SCRSpeechComponentSettings_SCRVoiceIdentifier",
     );

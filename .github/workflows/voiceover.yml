@@ -8,7 +8,13 @@ permissions:
 
 jobs:
   voiceover-hello-world:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-26
+          - xcode-27
     timeout-minutes: 30
 
     steps:
@@ -22,6 +28,8 @@ jobs:
       - run: npx @guidepup/setup setup --ci
       - run: npx @guidepup/setup install voiceover
       - run: npx playwright install webkit
+      - run: sw_vers
+      - run: csrutil status
 
       - run: |
           xcodebuild \
@@ -39,7 +47,7 @@ jobs:
           pluginkit -m -v -p com.apple.AudioUnit | tee plugin-list.txt
           grep "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension" plugin-list.txt
           auval -v ausp atdg BOCU
-          say -v '?' | grep "MacOSATDriverServerExtension" || true
+          say -v '?' | grep "MacOSATDriverServerExtensionVoice"
 
       - run: |
           node lib/bin/macos-at-driver listen > voiceover-listener.log 2>&1 &
@@ -59,8 +67,8 @@ jobs:
             exit 1
           fi
 
-          say -v "com.bocoup.MacOSATDriverServer.MacOSATDriverServerExtension" \
-            "macOS speech extension synthesis probe" || true
+          say -v "MacOSATDriverServerExtensionVoice" \
+            "macOS speech extension synthesis probe"
           sleep 2
 
       - run: npm run test:voiceover
